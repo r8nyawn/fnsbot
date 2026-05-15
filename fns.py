@@ -131,14 +131,11 @@ class FNSAPI:
         if not name:
             return ""
         
-        # Приводим к нижнему регистру
         normalized = name.lower()
-        
-        # Удаляем лишние символы
+
         for char in ['"', "'", ',', ';', ':', '!', '?', '«', '»']:
             normalized = normalized.replace(char, '')
-        
-        # Заменяем множественные пробелы на один
+
         normalized = ' '.join(normalized.split())
         
         return normalized.strip()
@@ -192,11 +189,10 @@ class FNSAPI:
             if words_found == len(search_words):
                 return 70
             elif words_found > 0:
-                return words_found * 10  # 10 баллов за каждое найденное слово
-        
-        # Частичное совпадение (хотя бы одно слово)
+                return words_found * 10
+
         for word in search_words:
-            if word in company_name and len(word) > 3:  # Слова короче 3 символов игнорируем
+            if word in company_name and len(word) > 3:
                 return 30
         
         return 0
@@ -521,8 +517,7 @@ class OOOBot:
             await update.message.reply_html(f"Ошибка: {result['error']}")
         elif result.get('items'):
             companies = result['items']
-            
-            # Добавляем информацию о типе поиска
+
             if result.get('type') == 'name':
                 if result.get('filtered_count', 0) < result.get('original_count', 0):
                     await update.message.reply_text(
@@ -537,7 +532,6 @@ class OOOBot:
     def format_search_results(self, companies, search_query, search_type=None):
         """Форматирование результатов поиска"""
         if search_type == 'inn' and companies:
-            # Если поиск по ИНН и нашли одну компанию, показываем детали
             company_data = self.fns_api.parse_company_data(companies[0])
             return self.format_company_details(company_data)
         
@@ -556,8 +550,7 @@ class OOOBot:
                 status = company['ЮЛ'].get('Статус', 'Неизвестно')
             elif company.get('ИП'):
                 status = company['ИП'].get('Статус', 'Неизвестно')
-            
-            # Добавляем индикатор релевантности
+
             relevance = company.get('_relevance', 0)
             relevance_indicator = "🎯" if relevance >= 80 else "✅" if relevance >= 50 else "🔍"
             
